@@ -22,10 +22,10 @@ jobs:
       run: GO111MODULE=on go get -insecure -u "github.com/golang/protobuf/proto"
     
     - name: Fetch SourceV2Ray
-      run: go get -insecure -u "github.com/v2ray/v2ray-core/app/router"@v4.23.2
+      run: GO111MODULE=on go get -insecure -u "github.com/v2ray/v2ray-core/app/router"@v4.23.2
       
     - name: Fetch Source Conf
-      run: go get -insecure -u "github.com/v2ray/v2ray-core/infra/conf"@v4.23.2
+      run: GO111MODULE=on go get -insecure -u "github.com/v2ray/v2ray-core/infra/conf"@v4.23.2
       
     - name: Build
       run: go build -v ./..
