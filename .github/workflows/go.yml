@@ -17,9 +17,9 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.14.1
-        
+           
     - name: Fetch Source
-      run: go get -insecure -u "github.com/golang/protobuf/proto"@v1.4.3
+      run: go mod init & go get -insecure -u "github.com/golang/protobuf/proto"@v1.4.3
     
     - name: Fetch SourceV2Ray
       run: go get -insecure -u "github.com/v2ray/v2ray-core/app/router"@v4.23.2
