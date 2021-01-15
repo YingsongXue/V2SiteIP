@@ -19,13 +19,13 @@ jobs:
         go-version: 1.14.1
            
     - name: Fetch Source
-      run: GO111MODULE=on go get -insecure -u "github.com/golang/protobuf/proto"
+      run: go get -insecure -u "github.com/golang/protobuf/proto"
     
     - name: Fetch SourceV2Ray
-      run: GO111MODULE=on go get -insecure -u "github.com/v2ray/v2ray-core/app/router"@v4.23.2
+      run: go get -insecure -u "github.com/v2ray/v2ray-core/tree/v4.23.2/app/router"
       
     - name: Fetch Source Conf
-      run: GO111MODULE=on go get -insecure -u "github.com/v2ray/v2ray-core/infra/conf"@v4.23.2
+      run: go get -insecure -u "github.com/v2ray/v2ray-core/tree/v4.23.2/infra/conf"
       
     - name: Build
       run: go build -v ./..
