@@ -19,7 +19,7 @@ jobs:
         go-version: 1.14
         
     - name: Fetch Source
-      run: go get "github.com/golang/protobuf/proto" "github.com/v2ray/v2ray-core/app/router" "github.com/v2ray/v2ray-core/infra/conf"
+      run: go get -insecure -u "github.com/golang/protobuf/proto" "github.com/v2ray/v2ray-core/app/router" "github.com/v2ray/v2ray-core/infra/conf"
 
     - name: Build
       run: go build -v ./...
