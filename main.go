@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/v2ray/v2ray-core/app/router"
-	"github.com/v2ray/v2ray-core/infra/conf"
+	"github.com/golang/protobuf/proto" v1.4.3
+	"github.com/v2ray/v2ray-core/app/router" v4.23.2
+	"github.com/v2ray/v2ray-core/infra/conf" v4.23.2
 )
 
 type vEntryType int32
