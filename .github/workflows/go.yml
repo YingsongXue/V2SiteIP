@@ -33,22 +33,16 @@ jobs:
         run: |
           cd v2siteip || exit 1
           go run main.go --dataPath=./data/
+          
+      - name: Move and zip files and generate sha256 hash
+        run: |
+          cd v2siteip || exit 1
           install -Dp ./v2ip.dat ./publish/v2ip.dat
           install -Dp ./v2site.dat ./publish/v2site.dat
           cd ./publish || exit 1
           zip rules.zip v2ip.dat v2site.dat
           sha256sum v2ip.dat > v2ip.dat.sha256sum
           sha256sum v2site.dat > v2site.dat.sha256sum
-          
-      # - name: Move and zip files and generate sha256 hash
-      #   run: |
-      #     cd v2siteip || exit 1
-      #     install -Dp ./v2ip.dat ./publish/v2ip.dat
-      #     install -Dp ./v2site.dat ./publish/v2site.dat
-      #     cd ./publish || exit 1
-      #     zip v2ip.dat v2site.dat
-      #     sha256sum v2ip.dat > v2ip.dat.sha256sum
-      #     sha256sum v2site.dat > v2site.dat.sha256sum
 
       - name: Release and upload assets
         uses: softprops/action-gh-release@v1
