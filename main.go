@@ -11,22 +11,25 @@ import (
 	"strconv"
 	"strings"
 
+	// "github.com/golang/protobuf/proto"
+	// "github.com/v2ray/v2ray-core/app/router"
+	// "github.com/v2ray/v2ray-core/infra/conf"
 	"github.com/golang/protobuf/proto"
-	"github.com/v2ray/v2ray-core/app/router"
-	"github.com/v2ray/v2ray-core/infra/conf"
+	"github.com/xtls/xray-core/app/router"
+	"github.com/xtls/xray-core/infra/conf"
 )
 
 type vEntryType int32
 
 const (
-	vEntryTypeUnknow       vEntryType = 0
+	vEntryTypeUnknown      vEntryType = 0
 	vEntryTypeDomain       vEntryType = 1
 	vEntryTypeRegex        vEntryType = 2
 	vEntryTypeKeyword      vEntryType = 3
 	vEntryTypeFull         vEntryType = 4
 	vEntryTypeIP           vEntryType = 10
 	vEntryTypeIPSubnetMask vEntryType = 11
-	vEntryTypeInclud       vEntryType = 100
+	vEntryTypeInclude      vEntryType = 100
 )
 
 type vEntry struct {
@@ -133,7 +136,7 @@ func removeComment(line string) string {
 
 func parseDomain(domain string, entry *vEntry) error {
 	kv := strings.Split(domain, ":")
-	entry.Type = vEntryTypeUnknow
+	entry.Type = vEntryTypeUnknown
 
 	if len(kv) == 1 {
 		entry.Type = vEntryTypeDomain
@@ -152,7 +155,7 @@ func parseDomain(domain string, entry *vEntry) error {
 		case "full":
 			entry.Type = vEntryTypeFull
 		case "include":
-			entry.Type = vEntryTypeInclud
+			entry.Type = vEntryTypeInclude
 		}
 		entry.Value = strings.ToLower(kv[1])
 		return nil
@@ -164,7 +167,7 @@ func parseDomain(domain string, entry *vEntry) error {
 func parseIP(ip string, entry *vEntry) error {
 	kv := strings.Split(ip, ":")
 
-	entry.Type = vEntryTypeUnknow
+	entry.Type = vEntryTypeUnknown
 
 	if len(kv) == 1 {
 		entry.Type = vEntryTypeIP
@@ -175,7 +178,7 @@ func parseIP(ip string, entry *vEntry) error {
 	}
 
 	if len(kv) == 2 {
-		entry.Type = vEntryTypeInclud
+		entry.Type = vEntryTypeInclude
 		entry.Value = strings.ToLower(kv[1])
 		return nil
 	}
@@ -195,11 +198,11 @@ func parseAttribute(attr string) (router.Domain_Attribute, error) {
 		attribute.TypedValue = &router.Domain_Attribute_BoolValue{BoolValue: true}
 	} else {
 		attribute.Key = strings.ToLower(parts[0])
-		intv, err := strconv.Atoi(parts[1])
+		intValue, err := strconv.Atoi(parts[1])
 		if err != nil {
 			return attribute, errors.New("invalid attribute: " + attr + ": " + err.Error())
 		}
-		attribute.TypedValue = &router.Domain_Attribute_IntValue{IntValue: int64(intv)}
+		attribute.TypedValue = &router.Domain_Attribute_IntValue{IntValue: int64(intValue)}
 	}
 	return attribute, nil
 }
@@ -328,7 +331,7 @@ func parseSiteList(list *vList, ref map[string]*vList) (*vParsedSiteList, error)
 		newEntryList := make([]vEntry, 0, len(entryList))
 		hasInclude := false
 		for _, entry := range entryList {
-			if entry.Type == vEntryTypeInclud {
+			if entry.Type == vEntryTypeInclude {
 				if pl.Inclusion[entry.Value] {
 					continue
 				}
@@ -364,7 +367,7 @@ func parseIPList(list *vList, ref map[string]*vList) (*vParsedIPList, error) {
 		newEntryList := make([]vEntry, 0, len(entryList))
 		hasInclude := false
 		for _, entry := range entryList {
-			if entry.Type == vEntryTypeInclud {
+			if entry.Type == vEntryTypeInclude {
 				if pl.Inclusion[entry.Value] {
 					continue
 				}
@@ -434,12 +437,12 @@ func main() {
 			continue
 		}
 		if list.Type == vFileTypeIP {
-			pipl, err := parseIPList(list, ref)
+			pIPList, err := parseIPList(list, ref)
 			if err != nil {
 				fmt.Println("Failed: ", err)
 				return
 			}
-			ips, err := pipl.toProto()
+			ips, err := pIPList.toProto()
 			if err != nil {
 				fmt.Println("Failed: ", err)
 				return
