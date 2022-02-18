@@ -58,13 +58,10 @@ jobs:
           repository: SwordJason/V2SiteIP
           path: v2siteip
 
-      - name: Build GeoSiteIP Program file
+      - name: Build GeoSiteIP file
         run: |
           cd v2siteip || exit 1
-          go build main.go
-
-      - name: Generate Data Run
-        run: ./main
+          go run main.go --dataPath=./data/
           
 #       - name: Move and zip files and generate sha256 hash
 #         run: |

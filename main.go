@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"errors"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -265,11 +266,12 @@ func detectPath(path string) (string, error) {
 	// 	}
 	// }
 
-	var currentPath = getCurrentDirectory()
-	var fullPath = filepath.Join(currentPath, "data")
-	_, err := os.Stat(fullPath)
+	// var currentPath = getCurrentDirectory()
+	// fmt.Println(currentPath)
+	// var fullPath = filepath.Join(currentPath, "data")
+	_, err := os.Stat(path)
 	if err == nil || os.IsExist(err) {
-		return fullPath, nil
+		return path, nil
 	}
 
 	err = errors.New("No file found in GOPATH")
@@ -393,8 +395,21 @@ func parseIPList(list *vList, ref map[string]*vList) (*vParsedIPList, error) {
 	return pl, nil
 }
 
+var dataPath string
+
+func init() {
+	flag.StringVar(&dataPath, "dataPath", "./", "Data path is required.")
+
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage of params:\n")
+		flag.PrintDefaults()
+	}
+}
+
 func main() {
-	sourceDir, err := detectPath(os.Getenv("GOPATH"))
+	flag.Parse()
+
+	sourceDir, err := detectPath(dataPath)
 	if err != nil {
 		fmt.Println("Failed: ", err)
 		return
