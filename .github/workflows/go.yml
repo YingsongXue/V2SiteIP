@@ -64,7 +64,7 @@ jobs:
 
       - name: Git push assets to "release" branch
         run: |
-          cd publish
+          cd v2siteip/publish || exit 1
           git init
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
