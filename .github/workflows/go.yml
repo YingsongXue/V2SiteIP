@@ -44,7 +44,7 @@ jobs:
           sha256sum v2ip.dat > v2ip.dat.sha256sum
           sha256sum v2site.dat > v2site.dat.sha256sum
 
-      - name: Release and upload assets
+      - name: Release and Upload Assets
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ env.RELEASE_NAME }}
@@ -52,7 +52,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ./publish/*
+            .v2siteip/publish/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
