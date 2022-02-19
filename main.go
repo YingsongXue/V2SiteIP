@@ -423,8 +423,10 @@ func main() {
 			return nil
 		}
 		list, err := load(path)
+
 		if err != nil {
-			return err
+			// return err
+			return nil
 		}
 		ref[list.Name] = list
 		return nil
@@ -433,11 +435,13 @@ func main() {
 		fmt.Println("Failed: ", err)
 		return
 	}
-	protoList := new(router.GeoSiteList)
+	siteList := new(router.GeoSiteList)
 	ipList := new(router.GeoIPList)
-
+	siteMapList := make([]string, 0)
+	ipMapList := make([]string, 0)
 	for _, list := range ref {
 		if list.Type == vFileTypeSite {
+			siteMapList = append(siteMapList, strings.ToLower(list.Name))
 			psl, err := parseSiteList(list, ref)
 			if err != nil {
 				fmt.Println("Failed: ", err)
@@ -448,10 +452,11 @@ func main() {
 				fmt.Println("Failed: ", err)
 				return
 			}
-			protoList.Entry = append(protoList.Entry, site)
+			siteList.Entry = append(siteList.Entry, site)
 			continue
 		}
 		if list.Type == vFileTypeIP {
+			ipMapList = append(ipMapList, strings.ToLower(list.Name))
 			pIPList, err := parseIPList(list, ref)
 			if err != nil {
 				fmt.Println("Failed: ", err)
@@ -468,7 +473,7 @@ func main() {
 	}
 
 	// Site List
-	protoBytes, err := proto.Marshal(protoList)
+	protoBytes, err := proto.Marshal(siteList)
 	if err != nil {
 		fmt.Println("Failed:", err)
 		return
@@ -487,4 +492,19 @@ func main() {
 		fmt.Println("Failed: ", err)
 	}
 
+	// Map Text
+	mapDictStr := ""
+	mapDictStr += "v2site:\n"
+	for _, v := range siteMapList {
+		mapDictStr += "    " + v + "\n"
+	}
+	mapDictStr += "v2ip:\n"
+	for _, v := range ipMapList {
+		mapDictStr += "    " + v + "\n"
+	}
+	mapDictByte := []byte(mapDictStr)
+	if err := ioutil.WriteFile("v2map.txt", mapDictByte, 0777); err != nil {
+		fmt.Println("Failed: ", err)
+		return
+	}
 }
