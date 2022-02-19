@@ -39,8 +39,9 @@ jobs:
           cd v2siteip || exit 1
           install -Dp ./v2ip.dat ./publish/v2ip.dat
           install -Dp ./v2site.dat ./publish/v2site.dat
+          install -Dp ./v2map.txt ./publish/v2map.txt
           cd ./publish || exit 1
-          zip rules.zip v2ip.dat v2site.dat
+          zip rules.zip v2ip.dat v2site.dat v2map.txt
           sha256sum v2ip.dat > v2ip.dat.sha256sum
           sha256sum v2site.dat > v2site.dat.sha256sum
 
