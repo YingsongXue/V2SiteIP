@@ -439,9 +439,18 @@ func main() {
 	ipList := new(router.GeoIPList)
 	siteMapList := make([]string, 0)
 	ipMapList := make([]string, 0)
+	yamlPACList := make([]string, 0)
 	for _, list := range ref {
 		if list.Type == vFileTypeSite {
+			// Append Domain Map
 			siteMapList = append(siteMapList, strings.ToLower(list.Name))
+
+			// Append YAML PAC List
+			yamlPACList = append(yamlPACList, "# Domain:"+strings.ToLower(list.Name))
+			for _, v := range list.Entry {
+				// - DOMAIN-SUFFIX,domain.com,Proxy
+				yamlPACList = append(yamlPACList, "- DOMAIN-SUFFIX,"+v.Value+",Proxy")
+			}
 			psl, err := parseSiteList(list, ref)
 			if err != nil {
 				fmt.Println("Failed: ", err)
@@ -456,7 +465,15 @@ func main() {
 			continue
 		}
 		if list.Type == vFileTypeIP {
+			// Append Domain Map
 			ipMapList = append(ipMapList, strings.ToLower(list.Name))
+
+			// Append YAML PAC List
+			yamlPACList = append(yamlPACList, "# IP:"+strings.ToLower(list.Name))
+			for _, v := range list.Entry {
+				// - IP-CIDR,34.214.88.100/32, Proxy
+				yamlPACList = append(yamlPACList, "- IP-CIDR,"+v.Value+"/32,Proxy")
+			}
 			pIPList, err := parseIPList(list, ref)
 			if err != nil {
 				fmt.Println("Failed: ", err)
@@ -504,6 +521,16 @@ func main() {
 	}
 	mapDictByte := []byte(mapDictStr)
 	if err := ioutil.WriteFile("v2map.txt", mapDictByte, 0777); err != nil {
+		fmt.Println("Failed: ", err)
+		return
+	}
+	// Map Text
+	yamlPACStr := ""
+	for _, v := range yamlPACList {
+		yamlPACStr += "" + v + "\n"
+	}
+	yamlPACByte := []byte(yamlPACStr)
+	if err := ioutil.WriteFile("v2yaml.yaml", yamlPACByte, 0777); err != nil {
 		fmt.Println("Failed: ", err)
 		return
 	}

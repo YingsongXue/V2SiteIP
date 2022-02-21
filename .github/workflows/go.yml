@@ -40,8 +40,9 @@ jobs:
           install -Dp ./v2ip.dat ./publish/v2ip.dat
           install -Dp ./v2site.dat ./publish/v2site.dat
           install -Dp ./v2map.txt ./publish/v2map.txt
+          install -Dp ./v2yaml.yaml ./publish/v2yaml.yaml
           cd ./publish || exit 1
-          zip rules.zip v2ip.dat v2site.dat v2map.txt
+          zip rules.zip v2ip.dat v2site.dat v2map.txt v2yaml.yaml
           sha256sum v2ip.dat > v2ip.dat.sha256sum
           sha256sum v2site.dat > v2site.dat.sha256sum
 
