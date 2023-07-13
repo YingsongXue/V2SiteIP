@@ -50,7 +50,7 @@ jobs:
       - name: Git push to main
         run: |
            cd v2siteip || exit 1
-           git add rules.zip
+           git add ./rules.zip
            git commit -m "${{ env.RELEASE_NAME }}"
            git push
 
