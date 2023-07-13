@@ -45,11 +45,12 @@ jobs:
           sha256sum v2ip.dat > v2ip.dat.sha256sum
           sha256sum v2site.dat > v2site.dat.sha256sum
           zip rules.zip v2ip.dat v2site.dat v2map.txt v2yaml.yaml v2ip.dat.sha256sum v2site.dat.sha256sum
-          install -Dp ./rules.zip v2siteip/rules.zip
+          install -Dp v2siteip/publish/rules.zip v2siteip/rules.zip
       
       - name: Git push to main
         run: |
            cd v2siteip || exit 1
+           git status
            git add ./rules.zip
            git commit -m "${{ env.RELEASE_NAME }}"
            git push
