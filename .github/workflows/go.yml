@@ -50,8 +50,8 @@ jobs:
       - name: Git push to main
         run: |
            cd v2siteip || exit 1
-           git status
-           ls .
+           git config --local user.name "actions"
+           git config --local user.email "action@github.com"
            git add ./rules.zip
            git commit -m "${{ env.RELEASE_NAME }}"
            git push
