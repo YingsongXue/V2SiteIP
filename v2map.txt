@@ -1,6 +1,0 @@
-v2site:
-    customer_site
-    developing_site
-v2ip:
-    budnet_ip
-    remote_ip
