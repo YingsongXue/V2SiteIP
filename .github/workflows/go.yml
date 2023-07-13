@@ -45,7 +45,7 @@ jobs:
           sha256sum v2ip.dat > v2ip.dat.sha256sum
           sha256sum v2site.dat > v2site.dat.sha256sum
           zip rules.zip v2ip.dat v2site.dat v2map.txt v2yaml.yaml v2ip.dat.sha256sum v2site.dat.sha256sum
-          cp rules.zip v2siteip/rules.zip
+          install -Dp ./rules.zip v2siteip/rules.zip
       
       - name: Git push to main
         run: |
