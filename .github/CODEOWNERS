@@ -1,0 +1,7 @@
+# Each line is a file pattern followed by one or more owners
+# Owners can be individuals or teams
+# Order is important; the last matching pattern takes the most precedence
+
+# These owners will be the default owners for everything in the repo, unless a later match takes precedence
+
+* yingsong@encompass8.cn
