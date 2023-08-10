@@ -2,6 +2,7 @@ azureedge.net
 googleapis.com
 github.global.ssl.fastly.net
 githubnext.com
+godaddy.com
 cloudflare-dns.com
 openai.com
 slack.com
@@ -69,5 +70,6 @@ unpkg.com
 v2ex.com
 v2fly.org
 w3.org
+web.dev
 zendesk.com
 zoom.us
