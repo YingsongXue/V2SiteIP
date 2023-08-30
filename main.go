@@ -5,19 +5,21 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
+	"github.com/xtls/xray-core/app/router"
+	"github.com/xtls/xray-core/common/net"
+	"google.golang.org/protobuf/proto"
 	// "github.com/golang/protobuf/proto" v1.4.3
 	// "github.com/v2ray/v2ray-core/app/router" v4.23.2
 	// "github.com/v2ray/v2ray-core/infra/conf" v4.23.2
-	"github.com/golang/protobuf/proto"
-	"github.com/xtls/xray-core/app/router"
-	"github.com/xtls/xray-core/infra/conf"
+	// "github.com/golang/protobuf/proto"
+	// "github.com/xtls/xray-core/app/router"
+	// "github.com/xtls/xray-core/infra/conf"
 )
 
 type vEntryType int32
@@ -105,10 +107,58 @@ func (l *vParsedSiteList) toProto() (*router.GeoSite, error) {
 				Attribute: entry.Attrs,
 			})
 		default:
-			return nil, errors.New("unknown domain type: ")
+			return nil, errors.New("unknown domain type: " + string(l.Name))
 		}
 	}
 	return site, nil
+}
+
+func ParseIP(s string) (*router.CIDR, error) {
+	var addr, mask string
+	i := strings.Index(s, "/")
+	if i < 0 {
+		addr = s
+	} else {
+		addr = s[:i]
+		mask = s[i+1:]
+	}
+	ip := net.ParseAddress(addr)
+	switch ip.Family() {
+	case net.AddressFamilyIPv4:
+		bits := uint32(32)
+		if len(mask) > 0 {
+			bits64, err := strconv.ParseUint(mask, 10, 32)
+			if err != nil {
+				return nil, errors.New("invalid network mask for router: " + mask)
+			}
+			bits = uint32(bits64)
+		}
+		if bits > 32 {
+			return nil, errors.New("invalid network mask for router: bites > 32")
+		}
+		return &router.CIDR{
+			Ip:     []byte(ip.IP()),
+			Prefix: bits,
+		}, nil
+	case net.AddressFamilyIPv6:
+		bits := uint32(128)
+		if len(mask) > 0 {
+			bits64, err := strconv.ParseUint(mask, 10, 32)
+			if err != nil {
+				return nil, errors.New("invalid network mask for router: " + mask)
+			}
+			bits = uint32(bits64)
+		}
+		if bits > 128 {
+			return nil, errors.New("invalid network mask for router: bites > 128")
+		}
+		return &router.CIDR{
+			Ip:     []byte(ip.IP()),
+			Prefix: bits,
+		}, nil
+	default:
+		return nil, errors.New("unsupported address for router: " + s)
+	}
 }
 
 func (l *vParsedIPList) toProto() (*router.GeoIP, error) {
@@ -117,7 +167,7 @@ func (l *vParsedIPList) toProto() (*router.GeoIP, error) {
 	}
 	for _, entry := range l.Entry {
 		if entry.Type == vEntryTypeIP || entry.Type == vEntryTypeIPSubnetMask {
-			cidr, err := conf.ParseIP(entry.Value)
+			cidr, err := ParseIP(entry.Value)
 			if err != nil {
 				continue
 			}
@@ -257,18 +307,6 @@ func getCurrentDirectory() string {
 }
 
 func detectPath(path string) (string, error) {
-	// arrPath := strings.Split(path, string(filepath.ListSeparator))
-	// for _, content := range arrPath {
-	// 	fullPath := filepath.Join(content, "src", "github.com", "SwordJason", "V2SiteIP", "data")
-	// 	_, err := os.Stat(fullPath)
-	// 	if err == nil || os.IsExist(err) {
-	// 		return fullPath, nil
-	// 	}
-	// }
-
-	// var currentPath = getCurrentDirectory()
-	// fmt.Println(currentPath)
-	// var fullPath = filepath.Join(currentPath, "data")
 	_, err := os.Stat(path)
 	if err == nil || os.IsExist(err) {
 		return path, nil
@@ -495,7 +533,7 @@ func main() {
 		fmt.Println("Failed:", err)
 		return
 	}
-	if err := ioutil.WriteFile("v2site.dat", protoBytes, 0777); err != nil {
+	if err := os.WriteFile("v2site.dat", protoBytes, os.ModePerm.Perm()); err != nil {
 		fmt.Println("Failed: ", err)
 	}
 
@@ -505,7 +543,7 @@ func main() {
 		fmt.Println("Failed:", err)
 		return
 	}
-	if err := ioutil.WriteFile("v2ip.dat", ipBytes, 0777); err != nil {
+	if err := os.WriteFile("v2ip.dat", ipBytes, os.ModePerm.Perm()); err != nil {
 		fmt.Println("Failed: ", err)
 	}
 
@@ -520,7 +558,7 @@ func main() {
 		mapDictStr += "    " + v + "\n"
 	}
 	mapDictByte := []byte(mapDictStr)
-	if err := ioutil.WriteFile("v2map.txt", mapDictByte, 0777); err != nil {
+	if err := os.WriteFile("v2map.txt", mapDictByte, os.ModePerm.Perm()); err != nil {
 		fmt.Println("Failed: ", err)
 		return
 	}
@@ -530,7 +568,7 @@ func main() {
 		yamlPACStr += "" + v + "\n"
 	}
 	yamlPACByte := []byte(yamlPACStr)
-	if err := ioutil.WriteFile("v2yaml.yaml", yamlPACByte, 0777); err != nil {
+	if err := os.WriteFile("v2yaml.yaml", yamlPACByte, os.ModePerm.Perm()); err != nil {
 		fmt.Println("Failed: ", err)
 		return
 	}

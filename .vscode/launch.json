@@ -10,7 +10,10 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}/main.go",
-            "args": ["--dataPath", "${workspaceFolder}/data/"]
+            "args": ["--dataPath", "${workspaceFolder}/data/"],
+            "dlvFlags": [
+                "--check-go-version=false"
+            ]
         }
     ]
 }
