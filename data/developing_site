@@ -8,6 +8,7 @@ googleapis.com
 github.global.ssl.fastly.net
 githubnext.com
 godaddy.com
+cloudflare.com
 cloudflare-dns.com
 openai.com
 slack.com
@@ -16,12 +17,6 @@ skype.com
 meta.com
 googleapis.com
 instagram.com
-github.global.ssl.fastly.net
-githubnext.com
-cloudflare-dns.com
-openai.com
-slack.com
-cloudflare.com
 contentful.com
 sentry-cdn.com
 payaconnect.com
