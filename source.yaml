@@ -52,6 +52,9 @@ rules:
 - IP-CIDR,20.200.245.247/32,Proxy,no-resolve
 - IP-CIDR,20.205.243.166/32,Proxy,no-resolve
 
+# CN
+- DOMAIN-SUFFIX,git.infrontsmart.com,Proxy
+
 # Unbreak
 # > Google
 - DOMAIN-SUFFIX,googletraveladservices.com,Proxy
