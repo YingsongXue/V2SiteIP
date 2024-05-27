@@ -46,10 +46,11 @@ jobs:
           install -Dp ./v2site.dat ./publish/v2site.dat
           install -Dp ./v2map.txt ./publish/v2map.txt
           install -Dp ./v2yaml.yaml ./publish/v2yaml.yaml
+          install -Dp ./source.yaml ./publish/source.yaml
           cd ./publish || exit 1
           sha256sum v2ip.dat > v2ip.dat.sha256sum
           sha256sum v2site.dat > v2site.dat.sha256sum
-          zip rules.zip v2ip.dat v2site.dat v2map.txt v2yaml.yaml v2ip.dat.sha256sum v2site.dat.sha256sum
+          zip rules.zip v2ip.dat v2site.dat v2map.txt v2yaml.yaml source.yaml v2ip.dat.sha256sum v2site.dat.sha256sum
           install -Dp ./rules.zip ../rules.zip
       
       # - name: Git push to main
